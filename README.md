@@ -161,11 +161,10 @@ DIVIDE(
 # 📂 Project Structure
 
 ```
-├── data/
+├── Data/
+│   ├──dirty_cafe_sales.csv
 ├── images/
 ├── sql/
-│   ├── Data
-│   │  ├──dirty_cafe_sales.csv
 │   ├── Data Profiling.txt
 │   ├── Data Cleaning.txt
 │   ├── Dimension_views.sql
