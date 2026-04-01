@@ -13,6 +13,9 @@ It covers:
 The project demonstrates how raw transactional data can be converted into **decision-ready insights**.
 
 ---
+##📸 Dashboard Preview
+
+---
 
 ## 🎯 Objectives
 
