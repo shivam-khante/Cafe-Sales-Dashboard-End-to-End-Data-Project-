@@ -13,8 +13,8 @@ It covers:
 The project demonstrates how raw transactional data can be converted into **decision-ready insights**.
 
 ---
-##📸 Dashboard Preview
-
+## 📊 dashboard preview
+<img width="1433" height="804" alt="Screenshot (4)" src="https://raw.githubusercontent.com/shivam-khante/Cafe-Sales-Dashboard-End-to-End-Data-Project-/main/Images/Hero%20Dashboard.png" />
 ---
 
 ## 🎯 Objectives
