@@ -1,0 +1,144 @@
+use cafe;
+
+select * from dirty_cafe_sales;
+
+create table bronze_cafe_sales as select * from dirty_cafe_sales;  -- Sample table to perform script
+
+select 
+sum(case when transaction_id is null or transaction_id='' then 1 else 0 end) as transaction_id, 
+sum(case when item is null or item='' then 1 else 0 end) as item,
+sum(case when quantity is null or quantity='' then 1 else 0 end) as quantity, 
+sum(case when price_per_unit is null or price_per_unit='' then 1 else 0 end) as price_per_unit, 
+sum(case when total_spent is null or total_spent='' then 1 else 0 end) as total_spent, 
+sum(case when payment_method is null or payment_method='' then 1 else 0 end) as payment_method, 
+sum(case when location is null or location='' then 1 else 0 end) as location,
+sum(case when transaction_date is null or transaction_date='' then 1 else 0 end) as transaction_date
+from bronze_cafe_sales;
+
+-- Null count
+-- Transaction_ID '0',Item '333',Quantity '138',Price_Per_Unit '179',Total_Spent '173',Payment_Method '2579',Location '3265',Transaction_Date '159'
+
+-- Distinct Values in item
+select distinct(Item) from bronze_cafe_sales;
+-- Coffee
+-- Cake
+-- Cookie
+-- Salad
+-- Smoothie
+-- UNKNOWN
+-- Sandwich
+
+-- ERROR
+-- Juice
+-- Tea
+
+select distinct(Quantity) from bronze_cafe_sales;
+-- 2
+-- 4
+-- 5
+-- 3
+-- 1
+-- ERROR
+-- UNKNOWN
+select distinct(Price_Per_Unit) from bronze_cafe_sales;
+-- 1.0
+-- 5.0
+-- 4.0
+-- 1.5
+
+-- ERROR
+-- UNKNOWN
+
+select distinct(Total_Spent) from bronze_cafe_sales;
+-- 4.0
+-- 12.0
+-- ERROR
+-- 10.0
+-- 20.0
+-- 9.0
+-- 16.0
+-- 15.0
+-- 25.0
+-- 8.0
+-- 5.0
+-- 3.0
+-- 6.0
+
+-- UNKNOWN
+-- 2.0
+-- 1.0
+-- 7.5
+-- 4.5
+-- 1.5
+
+select distinct(Payment_Method) from bronze_cafe_sales;
+-- Credit Card
+-- Cash
+-- UNKNOWN
+-- Digital Wallet
+-- ERROR
+select distinct(Location) from bronze_cafe_sales;
+-- Takeaway
+-- In-store
+-- UNKNOWN
+
+-- ERROR
+
+select *
+from (
+    select 
+        transaction_date,
+        case 
+            when transaction_date regexp '^[0-9]+-[0-9]{2}-[0-9]{2}' then 'correct'
+            else 'incorrect' 
+        end as date_format,
+        count(*) as cnt
+    from bronze_cafe_sales
+    group by transaction_date
+) t
+where date_format = 'incorrect';
+-- ERROR	incorrect	142
+-- 	incorrect	159
+-- UNKNOWN	incorrect	159
+
+select distinct(Item) from bronze_cafe_sales where Price_Per_Unit=1.5;
+
+-- Coffee	2.0 ok
+-- Cookie	1.0 ok
+-- Tea		1.5 ok
+-- Salad	5.0 ok
+-- Smoothie	4.0 not ok
+-- Sandwich	4.0 not ok
+-- Cake		3.0 not ok
+-- Juice	3.0 not ok
+select distinct(Payment_Method) from bronze_cafe_sales;
+-- Credit Card
+-- Cash
+-- UNKNOWN
+-- Digital Wallet
+-- ERROR
+
+select distinct(Location) from bronze_cafe_sales;
+-- Takeaway
+-- In-store
+-- UNKNOWN
+
+-- ERROR
+select 
+    transaction_date,
+    date_pattern
+from (
+    select 
+        transaction_date,
+        case
+            when transaction_date regexp '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' 
+            then 'correct'
+            else 'incorrect'
+        end as date_pattern
+    from bronze_cafe_sales
+) as t
+where date_pattern = 'incorrect'
+group by transaction_date, date_pattern;
+-- ERROR	Incorrect
+-- 			Incorrect
+-- UNKNOWN	Incorrect

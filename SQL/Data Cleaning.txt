@@ -1,0 +1,55 @@
+-- Data Cleaning
+create view silver_cafe_sales as
+select Transaction_ID,
+case 
+	when Item is null or trim(Item) = '' or Item in ('UNKNOWN','ERROR') 
+	then 'Not Specified'
+	else concat(ucase(left(trim(Item),1)), lcase(substring(trim(Item),2)))
+    end as Item,
+
+    /* clean quantity */
+    case 
+        when Quantity regexp '^[0-9]+$' 
+        then cast(Quantity as signed)
+        else null
+    end as Quantity,
+
+    /* clean price */
+    case 
+        when Price_Per_Unit regexp '^[0-9]+(\\.[0-9]+)?$' 
+        then cast(Price_Per_Unit as decimal(10,2))
+        else null
+    end as Price_Per_Unit,
+
+    /* fix total spent */
+    case 
+        when Total_Spent regexp '^[0-9]+(\\.[0-9]+)?$' 
+        then cast(Total_Spent as decimal(10,2))
+        when Quantity regexp '^[0-9]+$' 
+             and Price_Per_Unit regexp '^[0-9]+(\\.[0-9]+)?$'
+        then cast(Quantity as decimal(10,2)) * cast(Price_Per_Unit as decimal(10,2))
+        else null
+    end as Total_Spent,
+
+    /* clean payment method */
+    case 
+        when Payment_Method in ('Cash','Credit Card','Digital Wallet')
+        then Payment_Method
+        else 'Unknown'
+    end as Payment_Method,
+
+    /* clean location */
+    case 
+        when Location in ('Takeaway','In-store')
+        then Location
+        else 'Unknown'
+    end as Location,
+
+    /* clean date */
+    case 
+        when Transaction_Date regexp '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+        then cast(Transaction_Date as date)
+        else null
+    end as Transaction_Date
+
+from dirty_cafe_sales;

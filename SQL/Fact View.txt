@@ -1,0 +1,19 @@
+create view fact_sales_view as
+select
+    s.Transaction_ID,
+    i.Item_ID,
+    p.Payment_ID,
+    l.Location_ID,
+    d.Date_ID,
+    s.Quantity,
+    s.Price_Per_Unit,
+    s.Total_Spent
+from silver_cafe_sales s
+left join dim_item_view i 
+    on s.Item = i.Item_Name
+left join dim_payment_view p 
+    on s.Payment_Method = p.Payment_Method
+left join dim_location_view l 
+    on s.Location = l.Location_Name
+left join dim_date_view d 
+    on s.Transaction_Date = d.Full_Date;

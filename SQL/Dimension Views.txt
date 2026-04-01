@@ -1,0 +1,27 @@
+-- Creating Golden layer
+create view dim_item_view as
+select distinct
+    dense_rank() over (order by Item) as Item_ID,
+    Item as Item_Name
+from silver_cafe_sales
+where Item is not null;
+
+create view dim_payment_view as
+select distinct
+    dense_rank() over (order by Payment_Method) as Payment_ID,
+    Payment_Method
+from silver_cafe_sales
+where Payment_Method is not null;
+
+create view dim_location_view as
+select distinct
+    dense_rank() over (order by Location) as Location_ID,
+    Location as Location_Name
+from silver_cafe_sales
+where Location is not null;
+
+create view dim_date_view as
+select distinct
+    dense_rank() over (order by Transaction_Date) as Date_ID,
+    Transaction_Date as Full_Date from silver_cafe_sales
+where Transaction_Date is not null;
